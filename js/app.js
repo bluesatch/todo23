@@ -20,8 +20,26 @@ const addTaskBtn = document.getElementById('addTaskBtn')
 const taskList = document.getElementById('taskList')
 const completedBtn = document.getElementById('completedBtn')
 const completedList = document.getElementById('completedList')
+const completedTasks = document.getElementById('completedTasks')
 let taskArray = []
 let task = {}
+let badges = [
+    {
+        id: 1,
+        badge: 'blue',
+        imgUrl: 'bluebadge.jpeg'
+    },
+    {
+        id: 2,
+        badge: 'green',
+        imgUrl: 'greenbadge.jpeg'
+    },
+    {
+        id: 3,
+        badge: 'gold',
+        imgUrl: 'goldbadge.jpeg'
+    }
+]
 
 
 addTaskBtn.addEventListener('click', (e)=> {
@@ -78,7 +96,7 @@ const makeTaskItem =(el, item)=> {
     checkbox.classList.add('form-check-input', 'checkbox')
 
     const label = document.createElement('label')
-    label.classList.add('form-check-label', 'text-capitalize','mx-2')
+    label.classList.add('form-check-label', 'text-capitalize','mx-2', 'task-label')
     label.setAttribute('for', `taskId-${item.id}`)
     label.innerText = item.task
 
@@ -90,20 +108,58 @@ const makeTaskItem =(el, item)=> {
 }
 
 // completed button 
-completedBtn.addEventListener('click', ()=> {
+completedBtn.addEventListener('click', (e)=> {
+    e.preventDefault()
     // console.log('click');
-    validateCompletedTasks(taskList)
+    validateCompletedTasks()
 
 })
 
 // validate checked tasks 
 const validateCompletedTasks =()=> {
-    
+
     let completedArray = []
     const checkboxes = document.querySelectorAll('.checkbox')
-    // console.log(checkboxes);
+    const allTasks = document.querySelectorAll('.task-label')
+    
+    for (let i = 0; i < checkboxes.length; i++) {
+        
+        if (checkboxes[i].checked && (allTasks[i].getAttribute('for') == checkboxes[i].getAttribute('id'))) {
+            allTasks[i].classList.add('text-success')
+            completedArray = [...completedArray, allTasks[i]]
+        }
+    }
+    completedTasks.innerText = completedArray.length
+    makeCompleteItem(completedArray)
+    
+}
 
-    checkboxes.forEach(checkbox => checkbox.checked ? console.log('checked') : null)
-    // success
+// make li for completedList 
+const makeCompleteItem =(arr)=> {
 
+    
+    arr.forEach(item => {
+        const task = item.innerText 
+        // console.log(task)
+        const completedItem = document.createElement('li')
+        completedItem.classList.add('list-group-item', 'text-success', 'text-capitalize', 'completed-item')
+        completedItem.innerText = task 
+        
+        completedList.appendChild(completedItem)
+    });
+
+    awardBadge(arr)
+
+}
+
+// award badges
+const awardBadge =(arr)=> {
+    const numOfTasks = taskArray.length
+    const numOfCompleted = arr.length 
+
+    let completedToTaskRatio = numOfCompleted / numOfTasks
+
+    console.log(completedToTaskRatio);
+
+    
 }
